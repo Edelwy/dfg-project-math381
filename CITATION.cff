@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Honavalli
+    given-names: Bhavana
+  - family-names: Kulkarni
+    given-names: Riya
+  - family-names: Mislej
+    given-names: Nina
+  - family-names: M. Reed
+    given-names: Skyelar
+  - family-names: Yim
+    given-names: Marcus
+title: "Using Modeling Methods to Route Telecommunication Networks"
+date-released: 2024-05-21
