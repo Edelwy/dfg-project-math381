@@ -11,6 +11,10 @@ import argparse # For program agruments.
 import time # For timing the execution.
 plt.rcParams['figure.dpi'] = 200
 
+#-------------------------------------------------------------------------------------#
+#                               PARSING INPUT DATA                                    #
+#-------------------------------------------------------------------------------------#
+
 # Function for reading the input.
 # The input is in 2 spreadsheets one with links and one with nodes.
 def parseInput(filepath):
@@ -55,6 +59,10 @@ def createGraph(house_nodes, manhole_nodes, splitter_nodes, edges):
     for edge in edges: 
         G.add_edge(edge[0], edge[1], capacity=edge[2])
     return G
+
+#-------------------------------------------------------------------------------------#
+#                             CREATING THE IP MODEL                                   #
+#-------------------------------------------------------------------------------------#
 
 # Function that creates the variables.
 def createVariables(model, G_directed):
@@ -116,6 +124,10 @@ def evaluateModel(model, solution_name, pool_solutions):
     model.setParam(GRB.Param.PoolSolutions, pool_solutions) # Number of solutions saved.
     model.optimize() # Actually optimizing the model and finding the solution.
     model.write(f"{solution_name}.lp") # Write out the model.
+
+#-------------------------------------------------------------------------------------#
+#                          CREATING PATHS FROM VARIABLES                              #
+#-------------------------------------------------------------------------------------#
 
 # Function that changes name from "x[A B C]"" to "A B C".
 def modifyVariableName(model):
@@ -189,6 +201,10 @@ def junctionsToPaths(model):
             paths.append(path)
     return paths
 
+#-------------------------------------------------------------------------------------#
+#                               GRAPH VIZUALIZATION                                   #
+#-------------------------------------------------------------------------------------#
+
 # A helper function to darken the colour of the edges, so the vizualization
 # looks more readable.
 def darken_color(color, amount = 0.8): # amount is percantage.
@@ -207,6 +223,7 @@ def add_edge(G, a, b, edgeColor = 0):
     else: # If the edge isn't in the graph it can be straight.
         max_rad = 0
     G.add_edge(a, b, rad=max_rad+0.1, color=edgeColor) # Adding the edge with angle and colour.
+
 
 # Creates a multigraph for the vizualization of the solution.
 def createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths):
@@ -257,6 +274,10 @@ def visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes
                                edge_color=edge[2]["color"], ax=ax)
     nx.draw_networkx_labels(G_multi, pos, font_size=8, font_family="serif", ax=ax)
 
+#-------------------------------------------------------------------------------------#
+#                               HOUSE-NODE-HOUSE CHECK                                #
+#-------------------------------------------------------------------------------------#
+
 # Checking if the solution has house-node-house paths.
 def checkPaths(paths):
     for path in paths:
@@ -274,19 +295,33 @@ def checkPaths(paths):
     # If all paths had at least one manhole, we return true.
     return True
 
+#-------------------------------------------------------------------------------------#
+#                                       REPORT                                        #
+#-------------------------------------------------------------------------------------#
+
 # Writing up the report of the model to the user.
-def writeReport(model, paths, solNo, execution_time):
+def writeReport(model, paths, solNo, execution_time, junction_variables):
     report = "REPORT:\n"
     report += f"Number of solutions found: {model.SolCount}\n"
     report += f"This is the {solNo}. solution the model found.\n"
     report += f"Does this solution have a manhole in every path: {checkPaths(paths)}\n"
-    report += f"Execution time: {execution_time:.4f} seconds."
+    report += f"Execution time: {execution_time:.4f} seconds.\n"
+
+    if junction_variables:
+        report += "\nJUNCTION VARIABLES: \n"
+        for var in model.getVars():
+            if var.xn != 0:
+                report += f"{var.VarName}: {var.xn}\n"
+
     report += "\nPATHS: \n"
     for i, path in enumerate(paths):
         paths_str = ", ".join(path)
         report += f"{i:3}: {paths_str}\n"
     print(report)
 
+#-------------------------------------------------------------------------------------#
+#                              PARSING ARGUMENTS                                      #
+#-------------------------------------------------------------------------------------#
 
 # Specifying the arguments for the input of the program.
 def getParser():
@@ -301,6 +336,9 @@ def getParser():
                         action="store_true")
     parser.add_argument("--allow_all_paths", 
                         help="Use this flag if we allow house-node-house paths in solution.", 
+                        action="store_true")
+    parser.add_argument("-j", "--junction_variables",
+                        help="Use this flag if you want the list of junction variables in the report.", 
                         action="store_true")
     return parser
 
@@ -355,7 +393,7 @@ end_time = time.time()
 execution_time = end_time - start_time
 
 #Printing out the report.
-writeReport(model, paths, solution_index, execution_time)
+writeReport(model, paths, solution_index, execution_time, args.junction_variables)
 
 # Vizualizing the input as an undirected graph and a solution as a multigraph.
 if args.visualize:
