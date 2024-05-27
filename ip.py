@@ -123,7 +123,6 @@ def evaluateModel(model, solution_name, pool_solutions):
     model.setParam(GRB.Param.PoolSearchMode, 2) # Mode for searching all optimal solutions.
     model.setParam(GRB.Param.PoolSolutions, pool_solutions) # Number of solutions saved.
     model.optimize() # Actually optimizing the model and finding the solution.
-    model.write(f"{solution_name}.lp") # Write out the model.
 
 #-------------------------------------------------------------------------------------#
 #                          CREATING PATHS FROM VARIABLES                              #
