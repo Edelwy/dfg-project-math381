@@ -9,7 +9,7 @@ import random # For vizualization.
 import matplotlib.colors as mcolors # For vizualization.
 import argparse # For program agruments.
 import time # For timing the execution.
-plt.rcParams['figure.dpi'] = 200
+plt.rcParams['figure.dpi'] = 100
 
 #-------------------------------------------------------------------------------------#
 #                               PARSING INPUT DATA                                    #
@@ -65,7 +65,7 @@ def createGraph(house_nodes, manhole_nodes, splitter_nodes, edges):
 #-------------------------------------------------------------------------------------#
 
 # Function that creates the variables.
-def createVariables(model, G_directed):
+def createVariables(model, G_directed): # We are working with a directed graph.
     x = {} # Initializing an empty dictionary for storing the variables.
     # Iterating through first edges in junctions.
     for start in G_directed.edges(): 
@@ -73,7 +73,7 @@ def createVariables(model, G_directed):
         for end in G_directed.edges(start): 
             # If these 2 edges have a common middle 
             #node we add them to the dictionary.
-            if end[1] != start[0] and start[1] == end[0]: 
+            if end[1] != start[0] and start[1] == end[0] and start[1][0] != "M": 
                 x[start, end] = \
                 model.addVar(name=f"x[{start[0]} {start[1]} {end[1]}]", \
                             vtype=GRB.INTEGER)     
@@ -138,66 +138,95 @@ def modifyVariableName(model):
             vars[pathVarName] = int(var.xn)
     return vars
 
+# Adding paths consisting of just 1 edge.
+def addOneEdgePaths(G, paths, manhole_nodes, weights):
+    # Going throught every manhole node and checking its neighbors.
+    for node in manhole_nodes: 
+        for neighbor in G.neighbors(node):
+            # If the list of neighbors of the neighbor is just one element,
+            # it means that the neighbor is a leaf node, so we have to add 
+            # this one edge path to the paths list.
+            next_neighbors = list(G.neighbors(neighbor))
+            if len(next_neighbors) == 1:
+                for i in range(weights[node, neighbor]):
+                    paths.append([node, neighbor])
+
+# Helper function that updates the variable when it is added to the path.
+def updateVariable(vars, varKey, varsInPaths):
+    vars[varKey] = vars[varKey] - 1 # Decrease number of connections in junction.
+    if vars[varKey] == 0: # If there is no more options, we cannot use this anymore.
+        varsInPaths.add(varKey)
+
+# Helper function to determine if junction is in path.
+# We have for different options.
+# The last clause in the boolean expression is to work with cycles.
+def addNodeToPath(path, nodes):
+    # We add to the front of the path and the direction 
+    # of the junction is the same as the path.
+    if path[0] == nodes[1] and path[1] == nodes[2]:
+        if nodes[0] != path[-2]:
+            path.insert(0, nodes[0])
+        return True
+    # We add to the front of the path and the direction 
+    # of the junction is the opposite as the path.
+    elif path[0] == nodes[1] and path[1] == nodes[0]:
+        if nodes[2] != path[-2]:
+            path.insert(0, nodes[2])
+        return True
+    # We add to the end ont of the path and the direction 
+    # of the junction is the same as the path.
+    elif path[-2] == nodes[0] and path[-1] == nodes[1]:
+        if nodes[2] != path[1]:
+            path.append(nodes[2])
+        return True
+    # We add to the end ont of the path and the direction 
+    # of the junction is the opposite as the path.
+    elif path[-2] == nodes[2] and path[-1] == nodes[1]:
+        if nodes[0] != path[1]:
+            path.append(nodes[0])
+        return True
+    else: 
+        return False
+
 # A function that changes junction variables into paths.
-def junctionsToPaths(model):
+def junctionsToPaths(model, G, manhole_nodes, weights):
     # This function changes the name from IP variable names, to
     # just nodes in the junction so it is more readable in the path.
     # Name goes from "x[A B C]"" to "A B C".
     vars = copy.deepcopy(modifyVariableName(model))
     varsInPaths = set() # So we don't create paths from variables we already added.
     paths = [] # We will save paths created here.
+    ixVar = 0
+    while varsInPaths != set(vars):
+        firstVarKey = list(vars.keys())[ixVar]
 
-    for firstVarKey, firstVarValue in vars.items(): 
-        if(firstVarKey not in varsInPaths):
+        # Check if the fixed variable is already in some path.
+        if firstVarKey not in varsInPaths:
             firstNodes = firstVarKey.split(" ") # First three nodes of the path.
             path = [firstNodes[0], firstNodes[1], firstNodes[2]] # Add them.
-            vars[firstVarKey] = firstVarValue - 1
-            if vars[firstVarKey] == 0:
-                varsInPaths.add(firstVarKey)
+            updateVariable(vars, firstVarKey, varsInPaths)
 
             # We are going through the variables until there are changes made,
             # to the path. Once no new path is added, we can be sure the path is done.
             change = True
             while change:
+                # We check for a change every iteration.
                 change = False
-                # We add an edge to the path under 4 different conditions.
-                for varKey, varValue in vars.items():
-                    if(varKey == firstVarKey): continue
+                for varKey in vars.keys():
+                    if(varKey == firstVarKey): 
+                        continue
                     nodes = varKey.split(" ") # Getting all 3 nodes out of the junction.
-
-                    # We add to the front of the path and the direction 
-                    # of the junction is the same as the path.
-                    if path[0] == nodes[1] and path[1] == nodes[2]:
-                        path.insert(0, nodes[0])
-                        vars[varKey] = varValue - 1
-                        if vars[varKey] == 0:
-                            varsInPaths.add(varKey)
-                        change = True
-                    # We add to the front of the path and the direction 
-                    # of the junction is the opposite as the path.
-                    elif path[0] == nodes[1] and path[1] == nodes[0]:
-                        path.insert(0, nodes[2])
-                        vars[varKey] = varValue - 1
-                        if vars[varKey] == 0:
-                            varsInPaths.add(varKey)
-                        change = True
-                    # We add to the end ont of the path and the direction 
-                    # of the junction is the same as the path.
-                    elif path[-2] == nodes[0] and path[-1] == nodes[1]:
-                        path.append(nodes[2])
-                        vars[varKey] = varValue - 1
-                        if vars[varKey] == 0:
-                            varsInPaths.add(varKey)
-                        change = True
-                    # We add to the end ont of the path and the direction 
-                    # of the junction is the opposite as the path.
-                    elif path[-2] == nodes[2] and path[-1] == nodes[1]:
-                        path.append(nodes[0])
-                        vars[varKey] = varValue - 1
-                        if vars[varKey] == 0:
-                            varsInPaths.add(varKey)
-                        change = True
+                    # If this key is not used up already we can check whether,
+                    # it matches the path we are building.
+                    if varKey not in varsInPaths:
+                        change = addNodeToPath(path, nodes)
+                        if change:
+                            updateVariable(vars, varKey, varsInPaths)
             paths.append(path)
+        # We move onto the next variable modulo the length of our list,
+        # because we are looping through it.
+        ixVar = (ixVar + 1) % len(vars)
+    addOneEdgePaths(G, paths, manhole_nodes, weights)
     return paths
 
 #-------------------------------------------------------------------------------------#
@@ -274,10 +303,10 @@ def visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes
     nx.draw_networkx_labels(G_multi, pos, font_size=8, font_family="serif", ax=ax)
 
 #-------------------------------------------------------------------------------------#
-#                               HOUSE-NODE-HOUSE CHECK                                #
+#                               NO-MANHOLE PATHS CHECK                                #
 #-------------------------------------------------------------------------------------#
 
-# Checking if the solution has house-node-house paths.
+# Checking if the solution has paths with no manholes.
 def checkPaths(paths):
     for path in paths:
         has_manhole = False
@@ -349,7 +378,7 @@ def getParser():
 start_time = time.time()
 
 # Parsing the arguments.
-args = getParser().parse_args() 
+args = getParser().parse_args()
 
 # First we parse the input file provided in the arguments.
 # From that we get nodes of type house, splitter and manhole.
@@ -366,42 +395,46 @@ model = gp.Model("DFG") # Initialiting the model.
 x = createVariables(model, G_directed) # Creating the variables vector.
 createConstraints(model, G_directed, x, weights) # Adding constraints to the model.
 createObjective(model, house_nodes, x) # Adding the objective function to the model.
-evaluateModel(model, "DFG", pool_solutions=int(args.pool_number)) # Evaluating the solution.
-paths = junctionsToPaths(model) # Getting the paths of the model.
+evaluateModel(model, "DFG", pool_solutions = int(args.pool_number)) # Evaluating the solution.
 
-# If we don't want paths with house-node-house paths, we iterate through
-# the solutions and find the first one that satisfies this constraint.
-# If we dont find any we give a warning, that perhaps we should either save more
-# solutions or lose the constraint.
-solution_index = 0
-if not checkPaths(paths) and not args.allow_all_paths:
-    for i in range(1, model.SolCount):
-        model.setParam(GRB.Param.SolutionNumber, i)
-        paths = junctionsToPaths(model)
-        path_check = checkPaths(paths)
-        if path_check:
-            solution_index = i
-            break
-        if not path_check and i == model.SolCount - 1:
-            print("No solution with a manhole in every path found. \
-                  Printing last solution saved. If this is not satisfactory \
-                  consider increasing the number of solutions saved.")
-            
-# Getting the exection time.
-end_time = time.time()
-execution_time = end_time - start_time
+if model.SolCount == 0:
+    print("No solution was found for this model.")
+else:
+    paths = junctionsToPaths(model, G, manhole_nodes, weights) # Getting the paths of the model.
+    # If we don't want paths with house-node-house paths, we iterate through
+    # the solutions and find the first one that satisfies this constraint.
+    # If we dont find any we give a warning, that perhaps we should either save more
+    # solutions or lose the constraint.
+    solution_index = 0
+    if not checkPaths(paths) and not args.allow_all_paths:
+        for i in range(1, model.SolCount):
+            model.setParam(GRB.Param.SolutionNumber, i)
+            paths = junctionsToPaths(model, G, manhole_nodes, weights)
+            path_check = checkPaths(paths)
+            if path_check:
+                solution_index = i
+                break
+            if not path_check and i == model.SolCount - 1:
+                print("No solution with a manhole in every path found. \
+                    Printing last solution saved. If this is not satisfactory \
+                    consider increasing the number of solutions saved.")
+                
+    # Getting the exection time.
+    end_time = time.time()
+    execution_time = end_time - start_time
 
-#Printing out the report.
-writeReport(model, paths, solution_index, execution_time, args.junction_variables)
+    #Printing out the report.
+    writeReport(model, paths, solution_index, execution_time, args.junction_variables)
 
 # Vizualizing the input as an undirected graph and a solution as a multigraph.
 if args.visualize:
     pos=nx.spring_layout(G)
-    G_multi = createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths)
     plt.figure()
+    G_multi = createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths)
     visualizeGraph(G, pos, house_nodes, manhole_nodes, splitter_nodes, weights)
     plt.tight_layout()
-    plt.figure()
-    visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes)
-    plt.tight_layout()
+    if model.SolCount != 0:
+        plt.figure()
+        visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes)
+        plt.tight_layout()
     plt.show()
