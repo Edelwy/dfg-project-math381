@@ -7,7 +7,7 @@ Details about the model can be read in the paper. *Add the paper to the repo**
 
 ## Input Data
 
-There are a few theoretical examples of the input data in the **"test cases"** directory. The test cases are in the form of Microsoft Excel spreadsheets (`.xlsx` files). We are using a *pandoc* package to read the data, so you can use any of the [supported formats](https://pandas.pydata.org/docs/reference/api/pandas.read_excel.html).
+There are a few theoretical examples of the input data in the **"test-cases"** directory. The test cases are in the form of Microsoft Excel spreadsheets (`.xlsx` files). We are using a *pandoc* package to read the data, so you can use any of the [supported formats](https://pandas.pydata.org/docs/reference/api/pandas.read_excel.html).
 
 There are 2 sheets in each test case file. One is for nodes and one is for links of the networks. The first column of the **"nodes"** sheet is `str_name` which is used for labeling the nodes. The second column `ref_name` is the type of the node. There are 3 supported types:
 - type **PJ** is a manhole,
