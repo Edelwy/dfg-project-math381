@@ -8,4 +8,3 @@
 7. A more complex case with no cycles.
 8. A more complex case with no cycles.
 9. A case where the first solution is not without no-manhole paths.
-10. An example where a solution only exists if we allow unbalanced house edges.
