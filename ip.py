@@ -72,8 +72,8 @@ def createVariables(model, G_directed, manhole_nodes): # We are working with a d
         # Iterating through last edges in junctions.
         for end in G_directed.edges(start): 
             # If these 2 edges have a common middle 
-            #node we add them to the dictionary.
-            if end[1] != start[0] and start[1] == end[0] and start[1] not in manhole_nodes: 
+            # node we add them to the dictionary.
+            if end[1] != start[0] and start[1] == end[0] and start[1] not in manhole_nodes:
                 x[start, end] = \
                 model.addVar(name=f"x[{start[0]} {start[1]} {end[1]}]", \
                             vtype=GRB.INTEGER)     
@@ -104,6 +104,7 @@ def createConstraints(model, G_directed, x, weights):
         # The sum of variables on the fixed edge must be equal to the
         # weight on that edge.
         constr = constr == weights[start]
+
         # In the case where the key is not in the dictionary,
         # The constraint will be 0 which equals false, we dont want that.
         if constr != False: 
@@ -383,8 +384,6 @@ def getParser():
 
 # Start the timer.
 start_time = time.time()
-
-# Parsing the arguments.
 args = getParser().parse_args()
 
 # First we parse the input file provided in the arguments.

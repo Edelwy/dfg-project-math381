@@ -7,4 +7,8 @@
 6. A case when we have **no junction variables**, only paths with one edge.
 7. A more complex case with no cycles.
 8. A more complex case with no cycles.
-9. A case where the first solution is not without no-manhole paths.
+9. A case where the first solution is not without **no-manhole paths**.
+10. A very **computationally hard** case if we want all solutions.
+11. Another cycle with a path going out.
+12. An example with 2 connected components.
+13. An example with **no** solutions where every path has a manhole.
