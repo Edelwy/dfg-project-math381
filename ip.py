@@ -65,7 +65,7 @@ def createGraph(house_nodes, manhole_nodes, splitter_nodes, edges):
 #-------------------------------------------------------------------------------------#
 
 # Function that creates the variables.
-def createVariables(model, G_directed): # We are working with a directed graph.
+def createVariables(model, G_directed, manhole_nodes): # We are working with a directed graph.
     x = {} # Initializing an empty dictionary for storing the variables.
     # Iterating through first edges in junctions.
     for start in G_directed.edges(): 
@@ -73,18 +73,20 @@ def createVariables(model, G_directed): # We are working with a directed graph.
         for end in G_directed.edges(start): 
             # If these 2 edges have a common middle 
             #node we add them to the dictionary.
-            if end[1] != start[0] and start[1] == end[0] and start[1][0] != "M": 
+            if end[1] != start[0] and start[1] == end[0] and start[1] not in manhole_nodes: 
                 x[start, end] = \
                 model.addVar(name=f"x[{start[0]} {start[1]} {end[1]}]", \
                             vtype=GRB.INTEGER)     
     return x
 
 # Function for creating constraints.
-# Creating constraints for the start cable bundles:
-def createConstraints(model, G_directed, x, weights):
+# Creating constraints for the start cable bundles.
+# x is the variable vector, G_directed is the directed graph.
+def createConstraints(model, G_directed, x, weights): 
     # Fixed edge, the constraint of which we are using.
     for start in G_directed.edges():
         constr = 0 # Initialize the constraint.
+        
         # All other possible junction from this fixed edge.
         for end in G_directed.edges(start):
             # Check if the variable is in the dictionary.
@@ -150,6 +152,11 @@ def addOneEdgePaths(G, paths, manhole_nodes, weights):
             if len(next_neighbors) == 1:
                 for i in range(weights[node, neighbor]):
                     paths.append([node, neighbor])
+            # If we have 2 manholes connecting to eachother we also must add them.
+            # There is no junctions to connect here.
+            elif neighbor in manhole_nodes and [node, neighbor] not in paths:
+                for i in range(weights[neighbor, node]):
+                    paths.append([neighbor, node])
 
 # Helper function that updates the variable when it is added to the path.
 def updateVariable(vars, varKey, varsInPaths):
@@ -219,9 +226,9 @@ def junctionsToPaths(model, G, manhole_nodes, weights):
                     # If this key is not used up already we can check whether,
                     # it matches the path we are building.
                     if varKey not in varsInPaths:
-                        change = addNodeToPath(path, nodes)
-                        if change:
+                        if addNodeToPath(path, nodes):
                             updateVariable(vars, varKey, varsInPaths)
+                            change = True
             paths.append(path)
         # We move onto the next variable modulo the length of our list,
         # because we are looping through it.
@@ -362,7 +369,7 @@ def getParser():
     parser.add_argument("-v", "--visualize", 
                         help="Use this flag if you want vizualization of the solution.", 
                         action="store_true")
-    parser.add_argument("--allow_all_paths", 
+    parser.add_argument("-all", "--allow_all_paths", 
                         help="Use this flag if we allow house-node-house paths in solution.", 
                         action="store_true")
     parser.add_argument("-j", "--junction_variables",
@@ -392,8 +399,9 @@ G_directed = G.to_directed() # We also create a directed version of the graph.
 weights = nx.get_edge_attributes(G_directed, 'capacity')
 model = gp.Model("DFG") # Initialiting the model.
 
-x = createVariables(model, G_directed) # Creating the variables vector.
-createConstraints(model, G_directed, x, weights) # Adding constraints to the model.
+x = createVariables(model, G_directed, manhole_nodes) # Creating the variables vector.
+# Adding constraints to the model.
+createConstraints(model, G_directed, x, weights) 
 createObjective(model, house_nodes, x) # Adding the objective function to the model.
 evaluateModel(model, "DFG", pool_solutions = int(args.pool_number)) # Evaluating the solution.
 
@@ -430,11 +438,11 @@ else:
 if args.visualize:
     pos=nx.spring_layout(G)
     plt.figure()
-    G_multi = createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths)
     visualizeGraph(G, pos, house_nodes, manhole_nodes, splitter_nodes, weights)
     plt.tight_layout()
     if model.SolCount != 0:
         plt.figure()
+        G_multi = createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths)
         visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes)
         plt.tight_layout()
     plt.show()
