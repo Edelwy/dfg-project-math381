@@ -35,3 +35,19 @@ The executable has a few arguments and flags:
 - `-j` or `--junction_variables` flag is used if you also want the junction variables from the IP model in the report.
 
 The output of the program is the report on the cable paths, performance and number of solutions. It provides more insight than just listing out a number of paths.
+
+## Iterative Greedy Algorithm
+
+This repository has a regular *Python* version. The iterative greedy algorithm is fairly straight forward. With a random seed, we run iteratively the greedy algorithm until we find a solution. We recommend following the instructions there and executing it as you go. There are a few hyperparameters you can tweak, so mind those if you want to test the model on your own data.
+
+There are a few **packages** required in order to use this script:
+- [networkx](https://networkx.org/) for graph manipulation,
+- [pandas](https://pandas.pydata.org/docs/) for data parsing.
+- [matplotlib](https://matplotlib.org/) for graph and solution visualization.
+
+The executable has a few arguments and flags:
+- `input_file` is first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
+- `-v` or `--visualize` flag is used you want a picture representing the input and the solution as the program output. If you don't use this the *matplotlib* package is not necessary.
+- `-i` or `--iterations_number` program iterates that many times, if -1 repeat until a solution is found.
+
+The output of the program is the report on the cable paths and performance. It provides more insight than just listing out a number of paths.

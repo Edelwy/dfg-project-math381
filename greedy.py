@@ -339,7 +339,7 @@ def writeReport(paths, execution_time):
 def getParser():
     parser = argparse.ArgumentParser(description="Greedy method for finding disjoint paths.")
     parser.add_argument("input_file", help="This the location of the input file.")
-    parser.add_argument("iterations_number",
+    parser.add_argument("-i", "iterations_number",
                         help="Number of iterations to do.",
                         action="store",
                         default=-1)
