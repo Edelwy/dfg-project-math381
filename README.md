@@ -47,7 +47,8 @@ There are a few **packages** required in order to use this script:
 
 The executable has a few arguments and flags:
 - `input_file` is first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
-- `-v` or `--visualize` flag is used you want a picture representing the input and the solution as the program output. If you don't use this the *matplotlib* package is not necessary.
-- `-i` or `--iterations_number` program iterates that many times, if -1 repeat until a solution is found.
+- `-v` or `--visualize` flag is used if you want a picture representing the input and the solution as the program output. If you don't use this the *matplotlib* package is not necessary.
+- `-i` or `--iterations_number` program iterates that many times, defaults to -1: repeat until a solution is found.
+- `-rh` or `--random_heuristic` flag is used if you want to use a random heuristic (works for graphs that cannot be solved with the lowest-weight heuristic)
 
 The output of the program is the report on the cable paths and performance. It provides more insight than just listing out a number of paths.

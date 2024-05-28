@@ -111,7 +111,7 @@ def createGraph(house_nodes, manhole_nodes, splitter_nodes, edges):
 # prints a message and returns an empty list if a solution could not be found
 # in the # of iterations
 # num_iterations defaults to -1, running until it stops
-def find_disjoint_set(G, manholes, splitters, num_iterations=-1):
+def find_disjoint_set(G, manholes, splitters, random_heuristic, num_iterations=-1):
     if len(manholes) == 0:
         raise ValueError("No manholes passed in")
 
@@ -119,16 +119,16 @@ def find_disjoint_set(G, manholes, splitters, num_iterations=-1):
         raise ValueError("Isolated nodes in graph")
 
     G_copy = copy.deepcopy(G)
-    sets = remove_weight_greedy(G_copy, manholes)
+    sets = remove_weight_greedy(G_copy, manholes, random_heuristic)
 
     if num_iterations == -1:
         while not is_valid_disjoint(G_copy, sets, splitters):
             G_copy = copy.deepcopy(G)
-            sets = remove_weight_greedy(G_copy, manholes)
+            sets = remove_weight_greedy(G_copy, manholes, random_heuristic)
     else:
         for i in range(num_iterations - 1):
             G_copy = copy.deepcopy(G)
-            sets = remove_weight_greedy(G_copy, manholes)
+            sets = remove_weight_greedy(G_copy, manholes, random_heuristic)
 
             if is_valid_disjoint(G_copy, sets, splitters):
                 break
@@ -156,7 +156,7 @@ def is_valid_disjoint(G_copy, disjoint_sets, splitters):
 
 # this method iterates through a graph, removing weight as it goes
 # it utilizes a heuristic to guide its path
-def remove_weight_greedy(G_copy, manholes):
+def remove_weight_greedy(G_copy, manholes, random_heuristic):
     disjoint_sets = []
 
     manhole_weights = sum_manhole_weights(G_copy, manholes)
@@ -166,7 +166,7 @@ def remove_weight_greedy(G_copy, manholes):
         path = [random.choice(list(manhole_weights.keys()))]
 
         while len(G_copy.adj[path[len(path) - 1]]) > 0:
-            bestNode = get_best_node(G_copy, path)
+            bestNode = get_best_node(G_copy, path, random_heuristic)
 
             if bestNode == -1:
                 break
@@ -193,14 +193,17 @@ def sum_manhole_weights(G_copy, manholes):
 
 
 # this method identifies the best node by using a given heuristic
-def get_best_node(G_copy, path):
+def get_best_node(G_copy, path, random_heuristic):
     start = path[len(path) - 1]
     adj = G_copy.adj[start]
     queue = []
 
     for end in adj.keys():
         if G_copy[start][end]["weight"] > 0 and end not in path:
-            heapq.heappush(queue, (heuristic(G_copy, start, end), end))
+            if random_heuristic:
+                heapq.heappush(queue, (random.random(), end))
+            else:
+                heapq.heappush(queue, (heuristic(G_copy, start, end), end))
 
     if len(queue) == 0:
         return -1
@@ -339,16 +342,19 @@ def writeReport(paths, execution_time):
 def getParser():
     parser = argparse.ArgumentParser(description="Greedy method for finding disjoint paths.")
     parser.add_argument("input_file", help="This the location of the input file.")
-    parser.add_argument("-i", "iterations_number",
+    parser.add_argument("-i", "--iterations_number",
                         help="Number of iterations to do.",
                         action="store",
                         default=-1)
     parser.add_argument("-v", "--visualize",
                         help="Use this flag if you want vizualization of the solution.",
                         action="store_true")
-    parser.add_argument("--allow_all_paths",
-                        help="Use this flag if we allow house-node-house paths in solution.",
-                        action="store_true")
+
+    parser.add_argument("-rh", "--random_heuristic",
+                        help="Use this flag if you want a random heuristic rather than the existing one.",
+                        action="store_true",
+                        default=False)
+
     return parser
 
 # -------------------------------------------------------------------------------------#
@@ -372,7 +378,7 @@ G_directed = G.to_directed()  # We also create a directed version of the graph.
 # We extract the weights vector for all edges (directed).
 weights = nx.get_edge_attributes(G_directed, 'weight')
 
-paths = find_disjoint_set(G, manhole_nodes, splitter_nodes, int(args.iterations_number))
+paths = find_disjoint_set(G, manhole_nodes, splitter_nodes, args.random_heuristic, int(args.iterations_number))
 
 if len(paths) == 0:
     print("No solution was found for this model.")
@@ -397,3 +403,5 @@ if args.visualize:
         visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes)
         plt.tight_layout()
     plt.show()
+
+print(G)
