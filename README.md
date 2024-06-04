@@ -14,41 +14,41 @@ There are 2 sheets in each test case file. One is for nodes and one is for links
 - type **TS** is a splitter,
 - type **OS** is a house.
 
-The **"links"** sheet has 4 columns. The first one `span_name` is just a unique label for the edge.	The second `to_str_name` is the end node and third `from_str_name` is the start node (this is the order and layout of the data provided by the company). The fourth column is not provided by the company but has to be read from the corresponding picture they provide and is called `weights` short for edge weights.
+The **"links"** sheet has 4 columns. The first one `span_name` is just a unique label for the edge. The second `to_str_name` is the end node and the third `from_str_name` is the start node (this is the order and layout of the data provided by the company). The fourth column is not provided by the company but has to be read from the corresponding picture they provide and is called `weights` short for edge weights.
 
 
 ## Integer Programming 
 
-This repository has a *Jupyter Notebook* and a regular *Python* version. For those not as savvy with programming it is better to take a look at the first one, as there are **detailed explanations** of each cell provided for the reader to better comprehend the code. We recommend following the instructions there and executing it as you go. There are a few hyperparameters you can tweak, so mind those if you want to test the model on your own data.
+This repository has a *Jupyter Notebook* and a regular *Python* version. For those not as savvy with programming it is better to take a look at the first one, as there are **detailed explanations** of each cell provided for the reader to better comprehend the code. We recommend following the instructions there and executing it as you go. There are a few hyperparameters you can tweak, so mind those if you want to test the model on your data.
 
-There are a few **packages** required in order to use this script:
+There are a few **packages** required to use this script:
 - [gurobipy](https://pypi.org/project/gurobipy/) for implementing and evaluating the integer programming model,
 - [networkx](https://networkx.org/) for graph manipulation,
 - [pandas](https://pandas.pydata.org/docs/) for data parsing.
 - [matplotlib](https://matplotlib.org/) for graph and solution visualization.
 
 The executable has a few arguments and flags:
-- `input_file` is first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
+- `input_file` is the first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
 - `pool_number` is an optional second argument specifying how many solutions are saved.
-- `-v` or `--visualize` flag is used you want a picture representing the input and the solution as the program output. If you don't use this the *matplotlib* package is not necessary.
+- `-v` or `--visualize` flag is used if you want a picture representing the input and the solution as the program output. If you don't use this the *matplotlib* package is not necessary.
 - `--allow_all_paths` flag removes a restriction on the paths we allow in the solution of our model. The default does not allow paths in the form of *house-node-house*.
 - `-j` or `--junction_variables` flag is used if you also want the junction variables from the IP model in the report.
 
-The output of the program is the report on the cable paths, performance and number of solutions. It provides more insight than just listing out a number of paths.
+The output of the program is the report on the cable paths, performance, and number of solutions. It provides more insight than just listing out a number of paths.
 
 ## Iterative Greedy Algorithm
 
-This repository has a regular *Python* version. The iterative greedy algorithm is fairly straight forward. With a random seed, we run iteratively the greedy algorithm until we find a solution. We recommend following the instructions there and executing it as you go. There are a few hyperparameters you can tweak, so mind those if you want to test the model on your own data.
+This repository has a regular *Python* version. The iterative greedy algorithm is fairly straightforward. With a random seed, we run iteratively the greedy algorithm until we find a solution. We recommend following the instructions there and executing it as you go. There are a few hyperparameters you can tweak, so mind those if you want to test the model on your data.
 
-There are a few **packages** required in order to use this script:
+There are a few **packages** required to use this script:
 - [networkx](https://networkx.org/) for graph manipulation,
 - [pandas](https://pandas.pydata.org/docs/) for data parsing.
 - [matplotlib](https://matplotlib.org/) for graph and solution visualization.
 
 The executable has a few arguments and flags:
-- `input_file` is first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
+- `input_file` is the first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
 - `-v` or `--visualize` flag is used if you want a picture representing the input and the solution as the program output. If you don't use this the *matplotlib* package is not necessary.
-- `-i` or `--iterations_number` program iterates that many times, defaults to -1: repeat until a solution is found.
+- `-i` or `--iterations_number` program iterates that many times default to -1: repeat until a solution is found.
 - `-rh` or `--random_heuristic` flag is used if you want to use a random heuristic (works for graphs that cannot be solved with the lowest-weight heuristic)
 
 The output of the program is the report on the cable paths and performance. It provides more insight than just listing out a number of paths.
