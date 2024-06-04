@@ -1,0 +1,7 @@
+REPORT:
+Execution time: 0.2605 seconds.
+
+PATHS: 
+  0: M0, H0, H2, S0, H1
+  1: M0, H0, H1
+

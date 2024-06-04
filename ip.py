@@ -306,9 +306,9 @@ def visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes
         nx.draw_networkx_edges(G_multi, pos, 
                                edgelist=[(edge[0],edge[1])],
                                connectionstyle=f'arc3, rad = {edge[2]["rad"]}', 
-                               width=1.0, arrowstyle="-", 
+                               width=1.5, arrowstyle="-", 
                                edge_color=edge[2]["color"], ax=ax)
-    nx.draw_networkx_labels(G_multi, pos, font_size=8, font_family="serif", ax=ax)
+    nx.draw_networkx_labels(G_multi, pos, font_size=6, font_family="serif", ax=ax)
 
 #-------------------------------------------------------------------------------------#
 #                               NO-MANHOLE PATHS CHECK                                #
@@ -439,9 +439,11 @@ if args.visualize:
     plt.figure()
     visualizeGraph(G, pos, house_nodes, manhole_nodes, splitter_nodes, weights)
     plt.tight_layout()
+    plt.savefig(f'input.png')
     if model.SolCount != 0:
         plt.figure()
         G_multi = createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths)
         visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes)
         plt.tight_layout()
+        plt.savefig(f'output.png')
     plt.show()

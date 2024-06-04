@@ -281,19 +281,19 @@ def visualizeGraph(G, pos, house_nodes, manhole_nodes, splitter_nodes, weights, 
 # Each colour is a disjoint path.
 # The specifications are for prettier output.
 def visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes, ax=None):
-    nx.draw_networkx_nodes(G_multi, pos, house_nodes, node_shape='o',
+    nx.draw_networkx_nodes(G_multi, pos, house_nodes, node_shape='o', 
                            edgecolors="black", linewidths=0.5, ax=ax)
-    nx.draw_networkx_nodes(G_multi, pos, manhole_nodes, node_shape='s',
+    nx.draw_networkx_nodes(G_multi, pos, manhole_nodes, node_shape='s', 
                            edgecolors="black", linewidths=0.5, ax=ax)
-    nx.draw_networkx_nodes(G_multi, pos, splitter_nodes, node_shape='D',
+    nx.draw_networkx_nodes(G_multi, pos, splitter_nodes, node_shape='D', 
                            edgecolors="black", linewidths=0.5, ax=ax)
     for edge in G_multi.edges(data=True):
-        nx.draw_networkx_edges(G_multi, pos,
-                               edgelist=[(edge[0], edge[1])],
-                               connectionstyle=f'arc3, rad = {edge[2]["rad"]}',
-                               width=1.0, arrowstyle="-",
+        nx.draw_networkx_edges(G_multi, pos, 
+                               edgelist=[(edge[0],edge[1])],
+                               connectionstyle=f'arc3, rad = {edge[2]["rad"]}', 
+                               width=1.5, arrowstyle="-", 
                                edge_color=edge[2]["color"], ax=ax)
-    nx.draw_networkx_labels(G_multi, pos, font_size=8, font_family="serif", ax=ax)
+    nx.draw_networkx_labels(G_multi, pos, font_size=6, font_family="serif", ax=ax)
 
 
 # -------------------------------------------------------------------------------------#
@@ -390,18 +390,18 @@ else:
 
     # Printing out the report.
     writeReport(paths, execution_time)
-
+    
 # Vizualizing the input as an undirected graph and a solution as a multigraph.
 if args.visualize:
-    pos = nx.spring_layout(G)
+    pos=nx.spring_layout(G)
     plt.figure()
-    G_multi = createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths)
     visualizeGraph(G, pos, house_nodes, manhole_nodes, splitter_nodes, weights)
     plt.tight_layout()
+    plt.savefig(f'input.png')
     if len(paths) != 0:
         plt.figure()
+        G_multi = createMultigraph(house_nodes, manhole_nodes, splitter_nodes, paths)
         visualizeMultigraph(G_multi, pos, house_nodes, manhole_nodes, splitter_nodes)
         plt.tight_layout()
+        plt.savefig(f'output.png')
     plt.show()
-
-print(G)

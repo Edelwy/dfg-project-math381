@@ -1,0 +1,10 @@
+REPORT:
+Execution time: 0.2630 seconds.
+
+PATHS: 
+  0: M0, S1, S2, S3, M1
+  1: M0, S1, S2, S3, M1
+  2: M1, S3, S2, S1, M0
+  3: M0, S1, S2, S3, M1
+  4: M1, S3, S2, S1, M0
+
