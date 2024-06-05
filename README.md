@@ -26,6 +26,7 @@ There are a few **packages** required to use this script:
 - [networkx](https://networkx.org/) for graph manipulation,
 - [pandas](https://pandas.pydata.org/docs/) for data parsing.
 - [matplotlib](https://matplotlib.org/) for graph and solution visualization.
+- [pydot](https://pypi.org/project/pydot/) for imporving graph layouts, this can be ommited by using a different `networkx` graph position.
 
 The executable has a few arguments and flags:
 - `input_file` is the first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
@@ -44,6 +45,7 @@ There are a few **packages** required to use this script:
 - [networkx](https://networkx.org/) for graph manipulation,
 - [pandas](https://pandas.pydata.org/docs/) for data parsing.
 - [matplotlib](https://matplotlib.org/) for graph and solution visualization.
+- [pydot](https://pypi.org/project/pydot/) for imporving graph layouts, this can be ommited by using a different `networkx` graph position.
 
 The executable has a few arguments and flags:
 - `input_file` is the first position argument and specifies the location and name from which input data is read, therefore it is mandatory,
