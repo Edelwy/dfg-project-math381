@@ -1,0 +1,11 @@
+REPORT:
+Execution time: 0.1496 seconds.
+
+PATHS: 
+  0: M2, S1, H4
+  1: M2, H2, S2, M1
+  2: M1, S2, H2, M2, M3, H5
+  3: M3, M2
+  4: M2, M3, H3, H1
+  5: M3, H3, H1
+

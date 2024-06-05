@@ -1,0 +1,35 @@
+Set parameter Username
+Academic license - for non-commercial use only - expires 2025-04-08
+REPORT:
+Number of solutions found: 100
+This is the 0. solution the model found.
+Does this solution have a manhole in every path: True
+Execution time: 0.2619 seconds.
+
+PATHS: 
+  0: M1, S5, H2
+  1: M4, S3, M2
+  2: M4, S3, S2, S1, M1
+  3: M1, S1, S2, S3, M4
+  4: M1, S1, S2, S4, H9
+  5: M1, S1, S2, S4, H8
+  6: M1, S1, S2, S4, M3
+  7: M4, S3, S2, S1, M1
+  8: M3, S4, S2, S1, M1
+  9: M4, S3, M2
+ 10: M4, S3, S2, S1, M1
+ 11: M4, S3, M2
+ 12: M4, S3, M2
+ 13: M4, S3, M2
+ 14: M1, H10
+ 15: M1, H10
+ 16: M1, H1
+ 17: M2, H6
+ 18: M2, H7
+ 19: M3, H3
+ 20: M3, H3
+ 21: M3, H4
+ 22: M3, H4
+ 23: M3, H5
+ 24: M3, H5
+

@@ -1,0 +1,52 @@
+Set parameter Username
+Academic license - for non-commercial use only - expires 2025-04-08
+REPORT:
+Number of solutions found: 100
+This is the 0. solution the model found.
+Does this solution have a manhole in every path: True
+Execution time: 0.2674 seconds.
+
+PATHS: 
+  0: M1, S7, H3
+  1: M6, S4, S3, S2, S1, M1
+  2: M1, S1, S2, S6, H19
+  3: M1, S1, S2, S6, H10
+  4: M1, S1, S2, S6, M4
+  5: M1, S1, S2, S3, H14
+  6: H14, S3, S2, S1, M1
+  7: M2, S3, S4, M6
+  8: M2, S3, S4, M7
+  9: M2, S3, S4, S5, M8
+ 10: M6, S4, S3, M2
+ 11: M6, S4, S3, M5
+ 12: M4, S6, S2, S1, M1
+ 13: H14, S3, S2, S1, M1
+ 14: M2, S3, S4, M7
+ 15: M7, S4, S3, M5
+ 16: M5, S3, S4, M7
+ 17: M1, H2
+ 18: M1, H1
+ 19: M2, H11
+ 20: M2, H12
+ 21: M2, H13
+ 22: M3, H4
+ 23: M3, H4
+ 24: M3, H5
+ 25: M3, H5
+ 26: M3, H6
+ 27: M3, H6
+ 28: M4, H8
+ 29: M4, H7
+ 30: M4, H9
+ 31: M4, H9
+ 32: M4, H9
+ 33: M5, H18
+ 34: M5, H17
+ 35: M5, H16
+ 36: M5, H15
+ 37: M6, H20
+ 38: M6, H20
+ 39: M6, H20
+ 40: M6, H20
+ 41: M6, H20
+

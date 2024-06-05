@@ -1,8 +1,10 @@
 
 # Get the optional boolean argument if provided
-RANDOM="false"
+RH=false
+OUTPUT_DIR="../results-minimal-heurstic"
 if [ "${!#}" == "true" ]; then
-    OPTIONAL_BOOLEAN=true
+    RH=true
+    OUTPUT_DIR="../results-random-heuristic"
     # Remove the last argument from the list of test case numbers
     set -- "${@:1:$#-1}"
 fi
@@ -12,7 +14,6 @@ NUM_TEST_CASES=$1
 
 # Define the Python script filename.
 PYTHON_SCRIPT="../greedy.py"
-OUTPUT_DIR="../results-greedy"
 
 # Loop over all test cases.
 for TEST_CASE in "$@"; do
@@ -21,10 +22,12 @@ for TEST_CASE in "$@"; do
     PLOT_INPUT="${OUTPUT_DIR}/test_input_${TEST_CASE}.png"
     PLOT_OUTPUT="${OUTPUT_DIR}/test_output_${TEST_CASE}.png"
     # Run the Python script with the test case number and save its output to a file.
-    if [ "$RANDOM" == "true" ]; then
-        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v -rh > "$OUTPUT_FILE"
+    if [ "$RH" == "true" ]; then
+        echo "Random heuristic."
+        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v -i 1000 -rh > "$OUTPUT_FILE"
     else
-        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v > "$OUTPUT_FILE"
+        echo "Minimal edge weight heuristic."
+        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v  -i 1000 > "$OUTPUT_FILE"
     fi
 
     # Move the generated plot images to the desired locations

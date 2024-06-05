@@ -1,0 +1,26 @@
+REPORT:
+Execution time: 0.2276 seconds.
+
+PATHS: 
+  0: M1, S1, S2, S4, M3, H5
+  1: M3, H5
+  2: M2, H7
+  3: M3, H4
+  4: M1, S1, S2, S3, M4
+  5: M1, H10
+  6: M3, H4
+  7: M2, H6
+  8: M3, S4, S2, S1, M1, H10
+  9: M4, S3, S2, S1, M1, S5, H2
+ 10: M4, S3, S2, S1, M1, H1
+ 11: M1, S1, S2, S3, M4
+ 12: M1, S1, S2, S4, H9
+ 13: M3, H3
+ 14: M1, S1, S2, S4, H8
+ 15: M4, S3, M2
+ 16: M3, H3
+ 17: M2, S3, M4
+ 18: M2, S3, M4
+ 19: M4, S3, M2
+ 20: M2, S3, M4
+
