@@ -20,3 +20,5 @@ Feel free to tweak this if testing the algorithms on your data!
 11. Another cycle with a path going out.
 12. An example with 2 connected components.
 13. An example with **no** solutions where every path has a manhole.
+14. Scaled up example to **19** nodes.
+14. Scaled up example to **35** nodes.
