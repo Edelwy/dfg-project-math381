@@ -8,6 +8,7 @@ import networkx as nx
 import pandas as pd
 import matplotlib.colors as mcolors  # For vizualization.
 from matplotlib import pyplot as plt
+from networkx.drawing.nx_pydot import graphviz_layout
 
 
 # -------------------------------------------------------------------------------------#
@@ -393,7 +394,7 @@ else:
     
 # Vizualizing the input as an undirected graph and a solution as a multigraph.
 if args.visualize:
-    pos=nx.spring_layout(G)
+    pos=graphviz_layout(G, prog="twopi")
     plt.figure()
     visualizeGraph(G, pos, house_nodes, manhole_nodes, splitter_nodes, weights)
     plt.tight_layout()

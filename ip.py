@@ -9,6 +9,7 @@ import random # For vizualization.
 import matplotlib.colors as mcolors # For vizualization.
 import argparse # For program agruments.
 import time # For timing the execution.
+from networkx.drawing.nx_pydot import graphviz_layout
 plt.rcParams['figure.dpi'] = 100
 
 #-------------------------------------------------------------------------------------#
@@ -435,7 +436,7 @@ else:
 
 # Vizualizing the input as an undirected graph and a solution as a multigraph.
 if args.visualize:
-    pos=nx.spring_layout(G)
+    pos=graphviz_layout(G, prog="twopi")
     plt.figure()
     visualizeGraph(G, pos, house_nodes, manhole_nodes, splitter_nodes, weights)
     plt.tight_layout()
