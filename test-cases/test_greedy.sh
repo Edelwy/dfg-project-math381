@@ -24,10 +24,10 @@ for TEST_CASE in "$@"; do
     # Run the Python script with the test case number and save its output to a file.
     if [ "$RH" == "true" ]; then
         echo "Random heuristic."
-        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v -i 1000 -rh > "$OUTPUT_FILE"
+        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v -i 10000 -rh > "$OUTPUT_FILE"
     else
         echo "Minimal edge weight heuristic."
-        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v  -i 1000 > "$OUTPUT_FILE"
+        python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" -v  -i 10000 > "$OUTPUT_FILE"
     fi
 
     # Move the generated plot images to the desired locations

@@ -1,10 +1,10 @@
 Set parameter Username
 Academic license - for non-commercial use only - expires 2025-04-08
 REPORT:
-Number of solutions found: 100
+Number of solutions found: 10000
 This is the 3. solution the model found.
 Does this solution have a manhole in every path: True
-Execution time: 0.2830 seconds.
+Execution time: 0.6165 seconds.
 
 PATHS: 
   0: H1, S1, M1

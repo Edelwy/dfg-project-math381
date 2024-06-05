@@ -12,7 +12,7 @@ for TEST_CASE in "$@"; do
     PLOT_INPUT="${OUTPUT_DIR}/test_input_${TEST_CASE}.png"
     PLOT_OUTPUT="${OUTPUT_DIR}/test_output_${TEST_CASE}.png"
     # Run the Python script with the test case number and save its output to a file.
-    python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" 100 -v > "$OUTPUT_FILE"
+    python "$PYTHON_SCRIPT" "Example$TEST_CASE.xlsx" 10000 -v > "$OUTPUT_FILE"
 
     # Move the generated plot images to the desired locations
     if [ -f "input.png" ]; then

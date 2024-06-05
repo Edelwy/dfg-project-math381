@@ -1,10 +1,10 @@
 REPORT:
-Execution time: 0.1541 seconds.
+Execution time: 0.2227 seconds.
 
 PATHS: 
-  0: M0, H2, H5
-  1: M0, H1, H4
-  2: M0, H0, H3
+  0: M0, H0, H3
+  1: M0, H0, H3
+  2: M0, H1, H4
   3: M0, H1, H4
-  4: M0, H0, H3
+  4: M0, H2, H5
 

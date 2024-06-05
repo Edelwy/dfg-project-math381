@@ -1,15 +1,15 @@
 REPORT:
-Execution time: 0.1479 seconds.
+Execution time: 0.2284 seconds.
 
 PATHS: 
-  0: M3, S4, H8
-  1: M1, S1, S2, H5
-  2: M2, S2, S3, S4, H6
-  3: M1, S1, S2, H5
-  4: M1, S1, H2
-  5: M2, S2, S3, H7
-  6: M1, S1, H1
-  7: M2, S2, H5
-  8: M2, S2, S3, H4
-  9: M2, S2, S3, H3
+  0: M2, S2, H5
+  1: M2, S2, H5
+  2: M2, S2, H5
+  3: M3, S4, H6
+  4: M1, S1, H1
+  5: M2, S2, S3, H3
+  6: M1, S1, S2, S3, H4
+  7: M2, S2, S3, H7
+  8: M1, S1, H2
+  9: M1, S1, S2, S3, S4, H8
 

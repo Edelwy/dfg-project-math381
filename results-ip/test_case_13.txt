@@ -5,7 +5,7 @@ REPORT:
 Number of solutions found: 75
 This is the 0. solution the model found.
 Does this solution have a manhole in every path: False
-Execution time: 0.2550 seconds.
+Execution time: 0.2318 seconds.
 
 PATHS: 
   0: H1, S0, H0
