@@ -2,7 +2,7 @@
 
 We present our approach to modeling solutions for connecting nodes in a telecom network, ('telecom' meaning internet, cable, phone, etc.). Collaborating with **DFG Consulting**, (a Slovenian company), our team worked with a library of pictorially-represented networks to test whether each network had a connectivity solution. By utilizing two different standard mathematical programming solvers, we built a model that can conclusively determine a network's connectivity, and have proved its efficacy using sample networks provided by DFG.
 
-Details about the model can be read in the paper. *Add the paper to the repo**
+Details about the model can be read in the paper. 
 <br>This description is intended to clarify the use of these programs.
 
 ## Input Data
